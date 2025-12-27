@@ -5,10 +5,11 @@ from utilities.util_error_popup import show_error_popup
 
 
 
-def main():
-    scripts = [
-        "edge_vanisher.ps1",
-    ]
+def main(keep_edge = False):
+    scripts = []
+    if not keep_edge:
+        scripts.append("edge_vanisher.ps1")
+    
     for script in scripts:
         logger.info(f"Executing PowerShell script: {script}")
         try:
