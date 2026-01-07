@@ -53,6 +53,11 @@ def parse_args(argv=None):
         action="store_true",
         help="Run without the installing overlay",
     )
+    parser.add_argument(
+        "--keep_edge",
+        action="keep_edge",
+        help="Run without uninstalling Microsoft Edge",
+    )
     for slug, _, _ in DEBLOAT_STEPS:
         dest = f"skip_{slug.replace('-', '_')}_step"
         parser.add_argument(
@@ -175,7 +180,11 @@ def main(argv=None):
                 continue
             _update_status(status_label, message)
             try:
-                func()
+                if getattr(args, "keep_edge") and slug == "execute-raven-scripts":
+                    logger.info("Skipping edge removal")
+                    func(keep_edge=True)
+                else:
+                    func(False)
             except Exception:
                 return
         _update_status(status_label, "Restarting system…")
